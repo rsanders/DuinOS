@@ -4,8 +4,8 @@ HIGH	LITERAL1	Constants
 LOW	LITERAL1	Constants
 INPUT	LITERAL1	Constants
 OUTPUT	LITERAL1	Constants
-SERIAL	LITERAL1
-DISPLAY	LITERAL1
+SERIAL LITERAL1
+DISPLAY        LITERAL1
 DEC	LITERAL1	Serial_Print
 BIN	LITERAL1	Serial_Print
 HEX	LITERAL1	Serial_Print
@@ -26,10 +26,12 @@ INTERAL	LITERAL1	AnalogReference
 # KEYWORD1 specifies datatypes and C/C++ keywords
 
 boolean	KEYWORD1	BooleanVariables
+break	KEYWORD1	Break
 byte	KEYWORD1	Byte
 case	KEYWORD1	SwitchCase
 char	KEYWORD1	Char
 class	KEYWORD1
+continue	KEYWORD1	Continue
 default	KEYWORD1	SwitchCase	
 do	KEYWORD1	DoWhile
 double	KEYWORD1	Double
@@ -150,14 +152,19 @@ digitalRead	KEYWORD2	DigitalRead
 interrupts	KEYWORD2
 millis	KEYWORD2	Millis
 micros	KEYWORD2	Micros
-noInterrupts	KEYWORD2
+noInterrupts	KEYWORD2	NoInterrupts
+noTone	KEYWORD2	NoTone
 pinMode	KEYWORD2	PinMode
 pulseIn	KEYWORD2	PulseIn
 shiftOut	KEYWORD2	ShiftOut
+tone	KEYWORD2	Tone
 
-Serial	KEYWORD3
-Serial	KEYWORD2
+Serial	KEYWORD3	Serial
+Serial1	KEYWORD3	Serial
+Serial2	KEYWORD3	Serial
+Serial3	KEYWORD3	Serial
 begin	KEYWORD2	Serial_Begin
+end	KEYWORD2	Serial_End
 read	KEYWORD2	Serial_Read
 print	KEYWORD2	Serial_Print
 println	KEYWORD2	Serial_Println
@@ -175,25 +182,26 @@ loop	KEYWORD3	Loop
 # Datatypes (KEYWORD1)
 #######################################
 
-taskLoop	KEYWORD1
+taskLoop       KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-declareTaskLoop	KEYWORD2
-createTaskLoop	KEYWORD2
-suspend	KEYWORD2
-suspendTask	KEYWORD2
-suspendAll	KEYWORD2
-resumeTask	KEYWORD2
-resumeAll	KEYWORD2
-nextTask	KEYWORD2
-initMainLoopPriority	KEYWORD2
+declareTaskLoop        KEYWORD2
+createTaskLoop KEYWORD2
+suspend        KEYWORD2
+suspendTask    KEYWORD2
+suspendAll     KEYWORD2
+resumeTask     KEYWORD2
+resumeAll      KEYWORD2
+nextTask       KEYWORD2
+initMainLoopPriority   KEYWORD2
 
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-LOW_PRIORITY 	LITERAL1
-NORMAL_PRIORITY	LITERAL1
-HIGH_PRIORITY	LITERAL1
+LOW_PRIORITY   LITERAL1
+NORMAL_PRIORITY        LITERAL1
+HIGH_PRIORITY  LITERAL1
+
