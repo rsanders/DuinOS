@@ -1,4 +1,7 @@
 
+#include <WProgram.h>
+#include "DuinOS.h"
+
 unsigned portBASE_TYPE mainLoopPriority;
 
 void main_Task(void *pvParameters)
