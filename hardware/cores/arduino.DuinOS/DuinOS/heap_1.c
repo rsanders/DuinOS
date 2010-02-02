@@ -1,4 +1,3 @@
-#ifdef DUINOS_USE_HEAP1
 /*
 	FreeRTOS V5.4.2 - Copyright (C) 2009 Real Time Engineers Ltd.
 
@@ -58,6 +57,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifdef DUINOS_USE_HEAP1
 /* Setup the correct byte alignment mask for the defined byte alignment. */
 
 #if portBYTE_ALIGNMENT == 8
