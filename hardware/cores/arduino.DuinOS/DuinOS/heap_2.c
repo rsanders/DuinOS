@@ -1,4 +1,3 @@
-#ifdef DUINOS_USE_HEAP2
 /*
     FreeRTOS V6.0.2 - Copyright (C) 2010 Real Time Engineers Ltd.
 
@@ -70,6 +69,7 @@ task.h is included from an application file. */
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifdef DUINOS_USE_HEAP2
 #if portBYTE_ALIGNMENT == 8
     #define portBYTE_ALIGNMENT_MASK ( ( size_t ) 0x0007 )
 #endif
