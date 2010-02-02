@@ -1,4 +1,3 @@
-#ifdef DUINOS_USE_HEAP3
 /*
     FreeRTOS V6.0.2 - Copyright (C) 2010 Real Time Engineers Ltd.
 
@@ -74,6 +73,7 @@ task.h is included from an application file. */
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifdef DUINOS_USE_HEAP3
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 /*-----------------------------------------------------------*/
