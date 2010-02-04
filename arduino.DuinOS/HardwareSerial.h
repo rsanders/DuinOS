@@ -41,6 +41,8 @@ class HardwareSerial : public Print
     uint8_t _udre;
     uint8_t _u2x;
   public:
+    void (*recv_handler)(HardwareSerial *, int);
+
     HardwareSerial(ring_buffer *rx_buffer,
       volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
       volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
@@ -51,6 +53,7 @@ class HardwareSerial : public Print
     int read(void);
     void flush(void);
     virtual void write(uint8_t);
+    inline void store_char(unsigned char c);
     using Print::write; // pull in write(str) and write(buf, size) from Print
 };
 

@@ -61,30 +61,48 @@ inline void store_char(unsigned char c, ring_buffer *rx_buffer)
   }
 }
 
+inline void HardwareSerial::store_char(unsigned char c)
+{
+  int i = (_rx_buffer->head + 1) % RX_BUFFER_SIZE;
+
+  // if we should be storing the received character into the location
+  // just before the tail (meaning that the head would advance to the
+  // current location of the tail), we're about to overflow the buffer
+  // and so we don't write the character or advance the head.
+  if (i != _rx_buffer->tail) {
+    _rx_buffer->buffer[_rx_buffer->head] = c;
+    _rx_buffer->head = i;
+  }
+  if (recv_handler) {
+    recv_handler(this, c);
+  }
+}
+
+
 #if defined(__AVR_ATmega1280__)
 
 SIGNAL(SIG_USART0_RECV)
 {
   unsigned char c = UDR0;
-  store_char(c, &rx_buffer);
+  Serial.store_char(c);
 }
 
 SIGNAL(SIG_USART1_RECV)
 {
   unsigned char c = UDR1;
-  store_char(c, &rx_buffer1);
+  Serial1.store_char(c);
 }
 
 SIGNAL(SIG_USART2_RECV)
 {
   unsigned char c = UDR2;
-  store_char(c, &rx_buffer2);
+  Serial2.store_char(c);
 }
 
 SIGNAL(SIG_USART3_RECV)
 {
   unsigned char c = UDR3;
-  store_char(c, &rx_buffer3);
+  Serial3.store_char(c);
 }
 
 #else
@@ -100,7 +118,7 @@ SIGNAL(USART_RX_vect)
 #else
   unsigned char c = UDR0;
 #endif
-  store_char(c, &rx_buffer);
+  Serial.store_char(c);
 }
 
 #endif
