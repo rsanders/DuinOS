@@ -119,10 +119,7 @@ void serialFlush(void);
 unsigned long millis(void);
 unsigned long micros(void);
 
-#ifndef DuinOS__h
-//##: DuinOS overrides this:
-void delay(unsigned long);
-#endif
+void wiring_delay(unsigned long);
 
 void delayMicroseconds(unsigned int us);
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);

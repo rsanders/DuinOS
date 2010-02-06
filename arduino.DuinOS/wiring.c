@@ -102,6 +102,14 @@ unsigned long micros() {
 //##DuinOS overrides this function with a macro (DuinOS.h)
 //void delay(unsigned long ms)
 
+void wiring_delay(unsigned long ms)
+{
+        unsigned long start = millis();
+        
+        while (millis() - start <= ms)
+                ;
+}
+
 
 /* Delay for the given number of microseconds.  Assumes a 8 or 16 MHz clock.
  * Disables interrupts, which will disrupt the millis() function if used

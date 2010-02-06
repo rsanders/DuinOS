@@ -70,16 +70,17 @@ void name##Function()
 
 #define nextTask() taskYIELD()
 
-#define delay(ticks) vTaskDelay(ticks)
-/*
+/* #define delay(ticks) vTaskDelay(ticks) */
+
 inline void delay(const portTickType ticks)
 {
-	portTickType xLastWakeTime = xTaskGetTickCount();
-
-	//Better than vTaskDelay:
-	vTaskDelayUntil( &xLastWakeTime, ticks);
+  if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+    vTaskDelay(ticks / portTICK_RATE_MS);
+  } else {
+    wiring_delay(ticks);
+  }
 }
-*/
+
 
 //This macro is quiet different from setPriority, because this works even in those CPUs wich does not support
 //the set/getPriority macros (due to their small RAM memories). And, this only has effect if called in setup().
