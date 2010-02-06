@@ -5,7 +5,7 @@
 extern "C"{
 #endif
 
-void startDuinOS(void);
+void startDuinOS(void) __attribute__ ((naked));
 
 extern unsigned portBASE_TYPE mainLoopPriority;
 
