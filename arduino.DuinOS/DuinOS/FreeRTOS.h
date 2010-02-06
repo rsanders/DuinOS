@@ -174,7 +174,7 @@ typedef portBASE_TYPE (*pdTASK_HOOK_CODE)( void * );
 #endif
 
 #ifndef INCLUDE_xTaskGetSchedulerState
-	#define INCLUDE_xTaskGetSchedulerState 0
+	#define INCLUDE_xTaskGetSchedulerState 1
 #endif
 
 #if ( configUSE_MUTEXES == 1 )
