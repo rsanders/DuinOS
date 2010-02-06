@@ -142,6 +142,7 @@ HardwareSerial::HardwareSerial(ring_buffer *rx_buffer,
   _rxcie = rxcie;
   _udre = udre;
   _u2x = u2x;
+  recv_handler = NULL;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -150,6 +151,9 @@ void HardwareSerial::begin(long baud)
 {
   uint16_t baud_setting;
   bool use_u2x;
+
+  uint8_t oldSREG = SREG;
+  cli();
 
   // U2X mode is needed for baud rates higher than (CPU Hz / 16)
   if (baud > F_CPU / 16) {
@@ -181,30 +185,45 @@ void HardwareSerial::begin(long baud)
   sbi(*_ucsrb, _rxen);
   sbi(*_ucsrb, _txen);
   sbi(*_ucsrb, _rxcie);
+  
+  SREG = oldSREG;
 }
 
 void HardwareSerial::end()
 {
+  uint8_t oldSREG = SREG;
+  cli();
   cbi(*_ucsrb, _rxen);
   cbi(*_ucsrb, _txen);
   cbi(*_ucsrb, _rxcie);  
+  SREG = oldSREG;
 }
 
 uint8_t HardwareSerial::available(void)
 {
-  return (RX_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) % RX_BUFFER_SIZE;
+	uint8_t oldSREG = SREG;
+  cli();
+  uint8_t res = (RX_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) % RX_BUFFER_SIZE;
+  SREG = oldSREG;
+  return res;
 }
 
 int HardwareSerial::read(void)
 {
+  int res;
+	uint8_t oldSREG = SREG;
+  cli();
+
   // if the head isn't ahead of the tail, we don't have any characters
   if (_rx_buffer->head == _rx_buffer->tail) {
-    return -1;
+    res = -1;
   } else {
     unsigned char c = _rx_buffer->buffer[_rx_buffer->tail];
     _rx_buffer->tail = (_rx_buffer->tail + 1) % RX_BUFFER_SIZE;
-    return c;
+    res = c;
   }
+  SREG = oldSREG;
+  return res;
 }
 
 void HardwareSerial::flush()
@@ -218,15 +237,21 @@ void HardwareSerial::flush()
   // the value to rx_buffer_tail; the previous value of rx_buffer_head
   // may be written to rx_buffer_tail, making it appear as if the buffer
   // were full, not empty.
+	uint8_t oldSREG = SREG;
+  cli();
   _rx_buffer->head = _rx_buffer->tail;
+  SREG = oldSREG;
 }
 
 void HardwareSerial::write(uint8_t c)
 {
+  uint8_t oldSREG = SREG;
+  cli();
   while (!((*_ucsra) & (1 << _udre)))
     ;
 
   *_udr = c;
+  SREG = oldSREG;
 }
 
 // Preinstantiate Objects //////////////////////////////////////////////////////
