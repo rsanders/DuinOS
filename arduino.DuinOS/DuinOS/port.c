@@ -373,8 +373,9 @@ void vPortYieldFromTick( void ) __attribute__ ( ( naked ) );
 void vPortYieldFromTick( void )
 {
 	portSAVE_CONTEXT();
+	arduino_increment_millis();
 	vTaskIncrementTick();
-	vTaskSwitchContext();
+  vTaskSwitchContext();
 	portRESTORE_CONTEXT();
 
 	asm volatile ( "ret" );
@@ -440,9 +441,7 @@ static void prvSetupTimerInterrupt( void )
 	
   	ISR(TIMER0_OVF_vect, ISR_NAKED)
   	{
-	  	
-      arduino_increment_millis();
-  		vPortYieldFromTick();
+	  	vPortYieldFromTick();
   		asm volatile ( "reti" );
   	}
   #else
@@ -456,7 +455,7 @@ static void prvSetupTimerInterrupt( void )
   	void TIMER0_OVF_vect( void )
   	{
       arduino_increment_millis();
-  		vTaskIncrementTick();
+		  vTaskIncrementTick();
   	}
   #endif
 #else
@@ -484,6 +483,7 @@ static void prvSetupTimerInterrupt( void )
   	 */
   	ISR(TIMER1_OVF_vect, ISR_NAKED)
   	{
+      arduino_increment_millis();
   		vTaskIncrementTick();
   	}
   #endif
