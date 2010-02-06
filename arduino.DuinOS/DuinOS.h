@@ -21,6 +21,7 @@ extern "C"
 /* Scheduler include files. */
 #include "DuinOS/FreeRTOS.h"
 #include "DuinOS/task.h"
+#include "DuinOS/duinos_main.h"
 
 #ifdef __cplusplus
 } // extern "C"
