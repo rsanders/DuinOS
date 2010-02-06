@@ -70,6 +70,9 @@
 #define portBYTE_ALIGNMENT 1
 #define DUINOS_USE_HEAP2 1
 
+#ifndef FREERTOS_ARDUINO
+  #define FREERTOS_ARDUINO 1
+#endif
 
 //##2009.10.29: These values may be improved:
 #if defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__)

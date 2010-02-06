@@ -386,7 +386,10 @@ void vPortYieldFromTick( void )
  */
 static void prvSetupTimerInterrupt( void )
 {
-unsigned portLONG ulCompareMatch;
+  unsigned portLONG ulCompareMatch;
+
+  // timer 0 will be used in Arduino, and it's setup by the Arduino lib
+#ifndef FREERTOS_ARDUINO
 
 	/* Using 16bit timer 1 to generate the tick.  Correct fuses must be
 	selected for the configCPU_CLOCK_HZ clock. */
@@ -418,32 +421,70 @@ unsigned portLONG ulCompareMatch;
 	TCCR1A = 0;
 	TCCR1B = ((1 << CS10) | (1 << CS11) | (1 << WGM12));
 	TIMSK1 = (1 << OCIE1A);
+#endif
 }
 /*-----------------------------------------------------------*/
 
-#if configUSE_PREEMPTION == 1
+#ifdef FREERTOS_ARDUINO
+  void arduino_increment_millis();
 
-	/*
-	 * Tick ISR for preemptive scheduler.  We can use a naked attribute as
-	 * the context is saved at the start of vPortYieldFromTick().  The tick
-	 * count is incremented after the context is saved.
-	 */
-	void TIMER1_COMPA_vect( void ) __attribute__ ( ( signal, naked ) );
-	void TIMER1_COMPA_vect( void )
-	{
-		vPortYieldFromTick();
-		asm volatile ( "reti" );
-	}
+  #if configUSE_PREEMPTION == 1
+
+  	/*
+  	 * Tick ISR for preemptive scheduler.  We can use a naked attribute as
+  	 * the context is saved at the start of vPortYieldFromTick().  The tick
+  	 * count is incremented after the context is saved.
+  	 */
+  	//void TIMER1_OVF_vect( void ) __attribute__ ( ( signal, naked ) );
+  	//void TIMER1_OVF_vect( void )
+	
+  	ISR(TIMER0_OVF_vect, ISR_NAKED)
+  	{
+	  	
+      arduino_increment_millis();
+  		vPortYieldFromTick();
+  		asm volatile ( "reti" );
+  	}
+  #else
+
+  	/*
+  	 * Tick ISR for the cooperative scheduler.  All this does is increment the
+  	 * tick count.  We don't need to switch context, this can only be done by
+  	 * manual calls to taskYIELD();
+  	 */
+  	void TIMER0_OVF_vect( void ) __attribute__ ( ( signal ) );
+  	void TIMER0_OVF_vect( void )
+  	{
+      arduino_increment_millis();
+  		vTaskIncrementTick();
+  	}
+  #endif
 #else
+  #if configUSE_PREEMPTION == 1
 
-	/*
-	 * Tick ISR for the cooperative scheduler.  All this does is increment the
-	 * tick count.  We don't need to switch context, this can only be done by
-	 * manual calls to taskYIELD();
-	 */
-	void TIMER1_COMPA_vect( void ) __attribute__ ( ( signal ) );
-	void TIMER1_COMPA_vect( void )
-	{
-		vTaskIncrementTick();
-	}
+  	/*
+  	 * Tick ISR for preemptive scheduler.  We can use a naked attribute as
+  	 * the context is saved at the start of vPortYieldFromTick().  The tick
+  	 * count is incremented after the context is saved.
+  	 */
+  	//void TIMER1_OVF_vect( void ) __attribute__ ( ( signal, naked ) );
+  	//void TIMER1_OVF_vect( void )
+	
+  	ISR(TIMER1_OVF_vect, ISR_NAKED)
+  	{
+  		vPortYieldFromTick();
+  		asm volatile ( "reti" );
+  	}
+  #else
+
+  	/*
+  	 * Tick ISR for the cooperative scheduler.  All this does is increment the
+  	 * tick count.  We don't need to switch context, this can only be done by
+  	 * manual calls to taskYIELD();
+  	 */
+  	ISR(TIMER1_OVF_vect, ISR_NAKED)
+  	{
+  		vTaskIncrementTick();
+  	}
+  #endif
 #endif

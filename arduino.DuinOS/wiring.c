@@ -41,7 +41,11 @@ volatile unsigned long timer0_overflow_count = 0;
 volatile unsigned long timer0_millis = 0;
 static unsigned char timer0_fract = 0;
 
+#if 0
 SIGNAL(TIMER0_OVF_vect)
+#else
+void arduino_increment_millis()
+#endif
 {
 	// copy these to local variables so they can be stored in registers
 	// (volatile variables must be read from memory on every access)
@@ -190,9 +194,6 @@ void init()
 	sbi(TIMSK0, TOIE0);
 #endif
 
-//##DuinOS: This commented code is the only difference with the standard init() function
-//(DuinOS uses the timer 1 for the preemptive kernel):
-/*
 	// timers 1 and 2 are used for phase-correct hardware pwm
 	// this is better for motors as it ensures an even waveform
 	// note, however, that fast pwm mode can achieve a frequency of up
@@ -200,7 +201,6 @@ void init()
 	sbi(TCCR1B, CS11);\
 	sbi(TCCR1B, CS10);\
 	sbi(TCCR1A, WGM10);\
-*/
 
 	// set timer 2 prescale factor to 64
 #if defined(__AVR_ATmega8__)
