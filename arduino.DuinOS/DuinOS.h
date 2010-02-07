@@ -72,13 +72,17 @@ void name##Function()
 
 /* #define delay(ticks) vTaskDelay(ticks) */
 
-inline void delay(const portTickType ticks)
+inline void delay(const unsigned long ms)
 {
+#ifndef NO_FANCY_DELAY_FUNCTION
   if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
-    vTaskDelay(ticks / portTICK_RATE_MS);
+    vTaskDelay(ms / portTICK_RATE_MS);
   } else {
-    wiring_delay(ticks);
+    wiring_delay(ms);
   }
+#else
+  vTaskDelay(ms / portTICK_RATE_MS);
+#endif
 }
 
 
